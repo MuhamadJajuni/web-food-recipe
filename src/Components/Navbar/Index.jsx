@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { Container, Nav, Navbar } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import user from "../../Assets/images/user-demo.jpg";
-import { jwtDecode } from '/node_modules/.vite/deps/jwt-decode.js?v=352f305b';
+import { jwtDecode } from 'jwt-decode'
 const Navigation = () => {
   const [profile, setProfile] = useState(null);
   const userToken = localStorage.getItem("token");
