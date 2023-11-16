@@ -157,7 +157,7 @@ const Head = () => {
                   md={4}
                   className="d-flex justify-content-center align-items-center"
                 >
-                  <Link to={`/detail-menu/${item.id}`}>
+                  <Link to={`/detail-recipes/${item.id}`}>
                     <img
                       src={item.image}
                       alt="menu"
