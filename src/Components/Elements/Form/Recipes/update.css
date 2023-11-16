@@ -1,0 +1,27 @@
+.addphoto {
+    cursor: pointer;
+  }
+  
+  #upload-photo {
+    opacity: 0;
+  }
+  
+  .input-photo {
+    background-color: #f6f5f4;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    flex-direction: column;
+    object-fit: contain;
+  }
+  
+  .form-control:focus {
+    border-color: #efc81a;
+    box-shadow: 0 0 5px rgba(255, 255, 0, 0.5);
+  }
+  

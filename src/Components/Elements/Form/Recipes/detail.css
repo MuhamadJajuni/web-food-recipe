@@ -1,0 +1,35 @@
+.horizontal {
+    border-bottom: 3px solid #efc81a;
+    width: 100%;
+  }
+  
+  .form-control:focus {
+    border-color: #efc81a;
+    box-shadow: 0 0 5px rgba(255, 255, 0, 0.5);
+  }
+  
+  @media only screen and (max-width: 40em) {
+    .main-photo {
+      width: 400px;
+      height: 300px;
+      object-fit: cover;
+    }
+  
+    .coments {
+      flex-direction: column;
+      justify-content: flex-start;
+      display: flex;
+    }
+    .text-coments {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 20px;
+    }
+    .profile-photo {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+    }
+  }
+  

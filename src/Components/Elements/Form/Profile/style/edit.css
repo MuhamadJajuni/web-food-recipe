@@ -1,0 +1,41 @@
+.addphoto {
+    cursor: pointer;
+  }
+  
+  #upload-photo {
+    opacity: 0;
+  }
+  
+  .input-photo {
+    background-color: #f6f5f4;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    flex-direction: column;
+  }
+  
+  .size-img {
+    height: 174px;
+    width: 174px;
+    border-radius: 50%;
+  }
+  
+  .form-control {
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    border-color: black;
+  }
+  
+  .form-control:focus {
+    border-color: #efc81a;
+    box-shadow: 0 0 5px rgba(255, 255, 0, 0.5);
+  }
+  
+  .form-control::placeholder {
+    font-size: 12px;
+  }
+  

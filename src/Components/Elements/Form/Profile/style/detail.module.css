@@ -1,0 +1,5 @@
+.clickable:focus,
+.clickable:active {
+  color: #efc81a !important;
+  outline: none !important;
+}
