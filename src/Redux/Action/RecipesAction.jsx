@@ -48,7 +48,7 @@ export const updateRecipe = (data, id, navigate) => async (dispatch) => {
     dispatch({ payload: result.data, type: "UPDATE_RECIPE_SUCCESS" });
     toast.success("Update Recipe Successfully");
     setTimeout(() => {
-      navigate("/detail-profile");
+      navigate("/detail_profile");
     }, 2000);
   } catch (error) {
     console.log(error);
