@@ -99,7 +99,7 @@ VITE_REACT_BACKEND_URL = [BACKEND_URL]
 
 <table>
  <tr>
-    <td> <img width="350px" src=""  border="0"  alt="2" /></td>
+    <td> <img width="350px" src="https://asset.cloudinary.com/djm3ribxl/f4658d54407c05bdf6f9e8ec23dfe9cf"  border="0"  alt="2" /></td>
     <td><img width="350px"  src="" border="0" alt="3" /> </td>
   </tr>
    <tr>
