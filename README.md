@@ -100,7 +100,7 @@ VITE_REACT_BACKEND_URL = [BACKEND_URL]
 <table>
  <tr>
     <td> <img width="350px" src="https://res.cloudinary.com/djm3ribxl/image/upload/v1700458844/vgbok8y5bagycmwn27ni.png"  border="0"  alt="2" /></td>
-    <td><img width="350px"  src="" border="0" alt="3" /> </td>
+    <td><img width="350px"  src="https://res.cloudinary.com/djm3ribxl/image/upload/v1700459123/Register-page_tqsbjz.png" border="0" alt="3" /> </td>
   </tr>
    <tr>
      <td>Login</td>
@@ -108,16 +108,16 @@ VITE_REACT_BACKEND_URL = [BACKEND_URL]
   </tr>
 
   <tr>
-   <td><img width="350px" src="" border="0" alt="1" /></td>
-     <td><img width="350px"  src=""  border="0" alt="4" /></td>
+   <td><img width="350px" src="https://res.cloudinary.com/djm3ribxl/image/upload/v1700459258/Landing-Page_weyny1.png" border="0" alt="1" /></td>
+     <td><img width="350px"  src="https://res.cloudinary.com/djm3ribxl/image/upload/v1700459490/Popular-Page_sonvom.png"  border="0" alt="4" /></td>
   </tr>
    <tr>
     <td>Landing Page</td>
       <td>More Popular Recipe</td>  
   </tr>
   <tr>
-    <td><img width="350px"  src="" border="0" alt="3" /> </td>
-      <td><img width="350px"  src="" border="0" alt="3" /> </td>
+    <td><img width="350px"  src="https://res.cloudinary.com/djm3ribxl/image/upload/v1700459947/detail-page_ylfee7.png" border="0" alt="3" /> </td>
+      <td><img width="350px"  src="https://res.cloudinary.com/djm3ribxl/image/upload/v1700460053/add_pxkgw9.png" border="0" alt="3" /> </td>
   </tr>
    <tr>
       <td>Detail Product</td>
@@ -125,8 +125,8 @@ VITE_REACT_BACKEND_URL = [BACKEND_URL]
    
   </tr>
   <tr>
-      <td><img width="350px" src="" border="0" alt="4" /></td>
-      <td><img width="350px" src="" border="0" alt="4" /></td>
+      <td><img width="350px" src="https://res.cloudinary.com/djm3ribxl/image/upload/v1700460240/detail-video_yi1ymm.png" border="0" alt="4" /></td>
+      <td><img width="350px" src="https://res.cloudinary.com/djm3ribxl/image/upload/v1700460389/my-profil_a6xosd.png" border="0" alt="4" /></td>
   </tr>
    <tr>
       <td>Video Recipe</td>
