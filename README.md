@@ -120,7 +120,7 @@ VITE_REACT_BACKEND_URL = [BACKEND_URL]
       <td><img width="350px"  src="https://res.cloudinary.com/djm3ribxl/image/upload/v1700460053/add_pxkgw9.png" border="0" alt="3" /> </td>
   </tr>
    <tr>
-      <td>Detail Product</td>
+      <td>Detail Recipe</td>
       <td>Add Recipe</td>
    
   </tr>
@@ -129,7 +129,7 @@ VITE_REACT_BACKEND_URL = [BACKEND_URL]
       <td><img width="350px" src="https://res.cloudinary.com/djm3ribxl/image/upload/v1700460389/my-profil_a6xosd.png" border="0" alt="4" /></td>
   </tr>
    <tr>
-      <td>Video Recipe</td>
+      <td>Detail Video Recipe</td>
       <td>My Profile</td>
   </tr>
   
