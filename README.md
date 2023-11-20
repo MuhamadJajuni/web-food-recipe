@@ -78,12 +78,12 @@ cd web-food-recipe
 - Install Module
 
 ```
-npm install
+pnpm install
 ```
 
 - <a href="#setup-env">Setup .env</a>
-- Type ` npm run dev` To Start Website
-- Type ` npm run production` To Start Production
+- Type ` pnpm run dev` To Start Website
+- Type ` pnpm run production` To Start Production
 
 ### Setup .env
 
