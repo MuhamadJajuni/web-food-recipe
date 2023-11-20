@@ -165,10 +165,5 @@ Contributions are what make the open source community such an amazing place to b
 ## Contact
 My Email : Muhamadjajuni1@gmail.com
 <br/>
+<br/>
 Project Link: [https://github.com/MuhamadJajuni/web-food-recipe](https://github.com/MuhamadJajuni/web-food-recipe)
-
-
-
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
