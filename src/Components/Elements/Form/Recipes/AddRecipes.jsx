@@ -54,7 +54,6 @@ const AddProduct = () => {
 
     try {
       await dispatch(addRecipe(data, navigate));
-      console.log(data.data.videoLink);
     } catch (error) {
       toast.error(isError || "Internal server error");
     }
