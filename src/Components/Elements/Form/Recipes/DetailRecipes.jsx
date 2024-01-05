@@ -1,3 +1,5 @@
+/* eslint-disable no-undef */
+/* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
 import axios from "axios";
 import { Fragment, useEffect, useState } from "react";
@@ -9,14 +11,16 @@ import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { Slide, ToastContainer, toast } from "react-toastify";
 import photo from "../../../../Assets/images/user-demo.jpg";
-import { detailRecipe } from "./../../../../Redux/Action/RecipesAction";
+import { detailRecipes } from "../../../../Redux Toolkit/Slice/recipeSlice";
 import "./detail.css";
+
 const Index = () => {
   const { menuId } = useParams();
   const dispatch = useDispatch();
 
-  const { data, isLoading } = useSelector((state) => state.productReducer);
-  const [comment, setComment] = useState(null);
+  const { data, isLoading } = useSelector((state) => state.recipes);
+  console.log(data);
+  const [comment, setComment] = useState([]);
   const [totalComment, setTotalComment] = useState(0);
   const [inputComment, setInputComment] = useState({
     recipe_id: menuId,
@@ -26,7 +30,7 @@ const Index = () => {
 
   const getComment = () => {
     axios
-      .get(import.meta.env.VITE_REACT_BACKEND_URL + `/coment/${menuId}`, {
+      .get(import.meta.env.VITE_REACT_BACKEND_URL + `/comment/${menuId}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
@@ -42,11 +46,11 @@ const Index = () => {
       });
   };
 
-  const postComent = (event) => {
+  const postComment = (event) => {
     event.preventDefault();
     axios
       .post(
-        import.meta.env.VITE_REACT_BACKEND_URL + "/postComent",
+        import.meta.env.VITE_REACT_BACKEND_URL + "/postComment",
         inputComment,
         {
           headers: {
@@ -72,14 +76,13 @@ const Index = () => {
       ...inputComment,
       [e.target.name]: e.target.value,
     });
-    console.log(inputComment);
   };
-
   useEffect(() => {
-    dispatch(detailRecipe(menuId));
+    console.log("Data from server:", data);
+    dispatch(detailRecipes(menuId));
     getComment();
   }, [dispatch, menuId]);
-
+  
 
   if (isLoading) {
     return (
@@ -93,17 +96,18 @@ const Index = () => {
         }}
       >
         <ProgressBar
-        height="80"
-        width="80"
-        ariaLabel="progress-bar-loading"
-        wrapperStyle={{}}
-        wrapperClass="progress-bar-wrapper"
-        borderColor = '#F4442E'
-        barColor = '#51E5FF'
+          height="80"
+          width="80"
+          ariaLabel="progress-bar-loading"
+          wrapperStyle={{}}
+          wrapperClass="progress-bar-wrapper"
+          borderColor="#F4442E"
+          barColor="#51E5FF"
         />
       </div>
     );
   }
+
   return (
     <Fragment>
       <ToastContainer
@@ -134,7 +138,7 @@ const Index = () => {
                 <div>
                   <img
                     src={photo}
-                    alt="profle"
+                    alt="profile"
                     width={50}
                     className="rounded rounded-circle profile-photo"
                   />
@@ -147,13 +151,16 @@ const Index = () => {
 
               <div>
                 <p className="m-0">
-                  {new Date(data?.data?.create_at).toLocaleDateString("id-ID", {
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric",
-                  })}
+                  {new Date(data?.data?.create_at).toLocaleDateString(
+                    "id-ID",
+                    {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                    }
+                  )}
                 </p>
-                <p className="m-0">20 Likes -{totalComment} Comments</p>
+                <p className="m-0">20 Likes - {totalComment} Comments</p>
               </div>
             </div>
           </Col>
@@ -185,19 +192,25 @@ const Index = () => {
           </ul>
         </Col>
         <Col md={12} className="my-5">
-         <h3 className="fw-semibold mb-3">Video Recipes</h3>
-          <Col md={12} className="d-flex justify-content-center align-items-center">
+          <h3 className="fw-semibold mb-3">Video Recipes</h3>
+          <Col
+            md={12}
+            className="d-flex justify-content-center align-items-center"
+          >
             <div style={{ marginTop: "15px", marginBottom: "20px" }}>
-            <ReactPlayer
-            url={data?.data?.videolink}
-            width="800px"
-            height="500px"
-            controls={true}
-            />
-           </div>
+              <ReactPlayer
+                url={data?.data?.videolink}
+                width="800px"
+                height="500px"
+                controls={true}
+              />
+            </div>
           </Col>
         </Col>
-        <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }} className="d-flex gap-3 my-5">
+        <div
+          style={{ display: "flex", justifyContent: "center", alignItems: "center" }}
+          className="d-flex gap-3 my-5"
+        >
           <Button
             className="rounded border-0"
             style={{ backgroundColor: "#efc81a" }}
@@ -216,47 +229,45 @@ const Index = () => {
       <Container>
         <Row>
           <Col md={12} className="horizontal"></Col>
-          {comment?.map((item, index) => {
-            return (
-              <div key={index}>
-                <div className="d-flex my-5 coments">
-                  <div className="col-md-4 d-flex gap-4 justify-content-center">
-                    <img
-                      src={item.author_photo}
-                      alt="profle"
-                      width={50}
-                      height={50}
-                      className="rounded rounded-circle"
-                    />
+          {comment?.map((item, index) => (
+            <div key={index}>
+              <div className="d-flex my-5 coments">
+                <div className="col-md-4 d-flex gap-4 justify-content-center">
+                  <img
+                    src={item.author_photo}
+                    alt="profile"
+                    width={50}
+                    height={50}
+                    className="rounded rounded-circle"
+                  />
 
-                    <div>
-                      <p className="m-0">{item.author}</p>
-                      <p className="m-0 fw-bold">{item.formatted_create_at}</p>
-                    </div>
-                    <div
-                      style={{
-                        height: "60px",
-                        width: "5px",
-                        backgroundColor: "#efc81a",
-                      }}
-                    ></div>
+                  <div>
+                    <p className="m-0">{item.author}</p>
+                    <p className="m-0 fw-bold">{item.formatted_create_at}</p>
                   </div>
-                  <div className="col-md-8 d-flex align-items-center text-coments">
-                    <p className="m-0">{item.comment_text}</p>
-                  </div>
+                  <div
+                    style={{
+                      height: "60px",
+                      width: "5px",
+                      backgroundColor: "#efc81a",
+                    }}
+                  ></div>
+                </div>
+                <div className="col-md-8 d-flex align-items-center text-coments">
+                  <p className="m-0">{item.comment_text}</p>
                 </div>
               </div>
-            );
-          })}
+            </div>
+          ))}
 
           <div className="col-md-12 horizontal"></div>
         </Row>
       </Container>
 
       <div className="container my-5">
-        <Form onSubmit={postComent}>
+        <Form onSubmit={postComment}>
           <div className="mb-3">
-            <label htmlFor="coments" className="form-label"></label>
+            <label htmlFor="comments" className="form-label"></label>
             <textarea
               className="form-control"
               id="comment_text"

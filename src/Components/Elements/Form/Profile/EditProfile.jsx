@@ -8,7 +8,7 @@ import { useParams } from "react-router-dom";
 import { Slide, ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import user from "../../../../Assets/images/logo-apk.png";
-import { actionUpdate } from "./../../../../Redux/Action/AuthAction";
+import {updateProfile} from "../../../../Redux Toolkit/Slice/userSlice"
 import "./style/edit.css";
 const Index = () => {
   const { userId } = useParams();
@@ -38,31 +38,38 @@ const Index = () => {
       setProfile(res.data);
     });
   }, [userId, userToken]);
-  const { isLoading, isError } = useSelector((state) => state.authReducer);
+  const { isLoading, isError } = useSelector((state) => state.users);
   const handleInput = (e) => {
     const { value, name } = e.target;
     setDataUser({ ...dataUser, [name]: value });
   };
   const handlePhoto = (e) => {
-    setPhoto(e.target.files[0]);
+    const selectedPhoto = e.target.files[0];
+  
+    setPhoto(selectedPhoto);
+  
     setDataUser({
       ...dataUser,
-      photoUrl: URL.createObjectURL(e.target.files[0]),
+      photo: selectedPhoto, // Set the photo field to the actual File object
+      photoUrl: URL.createObjectURL(selectedPhoto),
     });
   };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(dataUser, photo);
+  
     let bodyFormData = new FormData();
     bodyFormData.append("name", dataUser.name);
-    bodyFormData.append("photo", photo);
+    bodyFormData.append("photo", dataUser.photo);
+  
     try {
-      await dispatch(actionUpdate(bodyFormData, userId));
+      await dispatch(updateProfile(bodyFormData, userId));
       window.location.reload();
     } catch (error) {
       toast.error(isError || "Internal server error");
     }
   };
+  
 
   if (isLoading) {
     return (

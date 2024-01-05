@@ -1,52 +1,43 @@
 import { useState } from "react";
 import { Col, Container, Form, Row } from "react-bootstrap";
 import { ProgressBar } from "react-loader-spinner";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import { Slide, ToastContainer, toast } from "react-toastify";
+import { Slide, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ButtonAuth from "../../ButtonCheckAuth/Index";
 import CheckBookAuth from "../../Checkbox/Index";
 import InputCheck from "../../Form/FormInput";
 import InputPassCheck from "../../Form/FormPassword";
 import Header from "../../Header/Index";
-import { actionLogin } from "./../../../../Redux/Action/AuthAction";
+import { loginUsers } from "../../../../Redux Toolkit/Slice/authSlice";
 
 const FormLogin = () => {
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const { isError, isLoading } = useSelector((state) => state.authReducer);
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
+  const [isLoading, setIsLoading] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [isChecked, setIsChecked] = useState(false);
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-  const handleCheckbox = () => {
-    setIsChecked(!isChecked);
-  };
 
-  const handleLogin = async (e) => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
 
-    const { email, password } = formData;
-    if (!email || !password) {
-      toast.error("Please fill in all the fields");
-      return;
-    }
-    if (!isChecked) {
-      toast.warning("Please check the checkboox");
-      return;
-    }
     try {
-      await dispatch(actionLogin(formData, navigate));
+      // Dispatch the loginUsers action with the email and password
+      await dispatch(loginUsers({ email, password }));
+
+      // Redirect to the desired page upon successful login
+      navigate("/home");
     } catch (error) {
-      toast.error(isError || "Internal server error");
+      // Handle login failure, e.g., display an error message
+      console.error("Login failed:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
-
   if (isLoading) {
     return (
       <div
@@ -59,13 +50,13 @@ const FormLogin = () => {
         }}
       >
         <ProgressBar
-        height="80"
-        width="80"
-        ariaLabel="progress-bar-loading"
-        wrapperStyle={{}}
-        wrapperClass="progress-bar-wrapper"
-        borderColor = '#F4442E'
-        barColor = '#51E5FF'
+          height="80"
+          width="80"
+          ariaLabel="progress-bar-loading"
+          wrapperStyle={{}}
+          wrapperClass="progress-bar-wrapper"
+          borderColor="#F4442E"
+          barColor="#51E5FF"
         />
       </div>
     );
@@ -94,25 +85,28 @@ const FormLogin = () => {
           >
             <Col md={4}>
               <Header judul="Welcome" text="Log in into your exiting account" />
-              <Form onSubmit={handleLogin}>
+              <Form onSubmit={handleSubmit}>
                 <InputCheck
                   label="Email"
                   type="email"
                   name="email"
-                  value={formData.email}
-                  onChange={handleChange}
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   placeholder="Enter Email"
                 />
                 <InputPassCheck
                   label="Password"
                   type="password"
                   name="password"
-                  value={formData.password}
-                  onChange={handleChange}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   placeholder="Enter Password"
                 />
 
-                <CheckBookAuth checked={isChecked} onChange={handleCheckbox} />
+                <CheckBookAuth
+                  checked={isChecked}
+                  onChange={(e) => setIsChecked(e.target.checked)}
+                />
                 <ButtonAuth text="Login" />
                 <p className="mt-3 d-flex justify-content-center align-items-center">
                   Dont have an account?

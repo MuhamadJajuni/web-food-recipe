@@ -1,7 +1,7 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import ReactDOM from "react-dom/client";
 import { Provider } from "react-redux";
-import store from "./Redux/Store/Store.jsx";
+import { store } from "./Redux Toolkit/Store.jsx"
 import App from "./Router/App.jsx";
 import "./index.css";
 

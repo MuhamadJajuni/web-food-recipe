@@ -1,87 +1,39 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable no-undef */
-import { Fragment, useState } from "react";
+import React, { Fragment, useState } from "react";
 import { Col, Container, Form, Row } from "react-bootstrap";
 import { ProgressBar } from "react-loader-spinner";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { Slide, ToastContainer, toast } from "react-toastify";
+import { Slide, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { addRecipe } from "./../../../../Redux/Action/RecipesAction";
+import { addRecipes } from "../../../../Redux Toolkit/Slice/recipeSlice";
 import "./update.css";
 
 const AddProduct = () => {
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const { isError, isLoading } = useSelector((state) => state.productReducer);
+  const [title, setTitle] = useState("");
+  const [ingredients, setIngredients] = useState("");
+  const [videolink, setVideolink] = useState("");
+  const [category_id, setCategory_id] = useState("");
   const [image, setImage] = useState(null);
-  const [inputData, setInputData] = useState({
-    title: "",
-    ingredients: "",
-    videolink: "",
-    category_id: "",
-    photo_url: "",
-  });
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleInput = (e) => {
-    setInputData({ ...inputData, [e.target.name]: e.target.value });
-  };
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-  const handleImage = (e) => {
-    setImage(e.target.files[0]);
-    e.target.files[0] &&
-      setInputData({
-        ...inputData,
-        photo_url: URL.createObjectURL(e.target.files[0]),
-      });
-  };
-
-  const postRecipe = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
-    const { title, ingredients, videolink, category_id, photo_url } = inputData;
-    if (!title || !ingredients || !videolink || !category_id || !photo_url) {
-      toast.error("Please fill in all the fields");
-      return;
-    }
-    const data = new FormData();
-    data.append("title", inputData.title);
-    data.append("ingredients", inputData.ingredients);
-    data.append("videolink", inputData.videolink);
-    data.append("category_id", inputData.category_id);
-    data.append("image", image);
-
-    console.log(image);
+    setIsLoading(true);
 
     try {
-      await dispatch(addRecipe(data, navigate));
+      await dispatch(addRecipes({ title, ingredients, videolink, category_id, image }));
+      navigate("/home");
     } catch (error) {
-      toast.error(isError || "Internal server error");
+      console.error("Error creating recipe:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
-
-  if (isLoading) {
-    return (
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          height: "100vh",
-          paddingLeft: "50px",
-        }}
-      >
-        <ProgressBar
-        height="80"
-        width="80"
-        ariaLabel="progress-bar-loading"
-        wrapperStyle={{}}
-        wrapperClass="progress-bar-wrapper"
-        borderColor = '#F4442E'
-        barColor = '#51E5FF'
-        />
-      </div>
-    );
-  }
 
   return (
     <Fragment>
@@ -99,7 +51,7 @@ const AddProduct = () => {
           pauseOnHover
           theme="colored"
         />
-        <Form onSubmit={postRecipe}>
+        <Form onSubmit={handleSubmit}>
           <div className="mb-3">
             <p className="d-flex justify-content-end m-0">Max File 1MB</p>
             <label
@@ -108,9 +60,7 @@ const AddProduct = () => {
               htmlFor="upload-photo"
             >
               <div className="input-photo" id="addphotowrapper">
-                {image && (
-                  <img src={inputData.photo_url} className="input-photo" />
-                )}
+                {image && <img src={URL.createObjectURL(image)} alt="uploaded" className="input-photo" />}
                 <p>Add Photo</p>
               </div>
             </label>
@@ -118,7 +68,8 @@ const AddProduct = () => {
               type="file"
               name="image"
               id="upload-photo"
-              onChange={handleImage}
+              style={{ display: "none" }}
+              onChange={(e) => setImage(e.target.files[0])}
             />
           </div>
           <div className="mb-2">
@@ -127,8 +78,8 @@ const AddProduct = () => {
               type="text"
               id="formtitle"
               name="title"
-              value={inputData.title}
-              onChange={handleInput}
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
               placeholder="Title"
               style={{ backgroundColor: "#f6f5f4" }}
             />
@@ -139,32 +90,32 @@ const AddProduct = () => {
               as="textarea"
               id="formingredients"
               name="ingredients"
-              value={inputData.ingredients}
-              onChange={handleInput}
+              value={ingredients}
+              onChange={(e) => setIngredients(e.target.value)}
               rows={5}
               placeholder="Ingredients"
               style={{ backgroundColor: "#f6f5f4", height: "200px" }}
             />
           </div>
           <div className="mb-2">
-                <Form.Label htmlFor="formvideo">Video Link</Form.Label>
-                <Form.Control
-                  type="text"
-                  id="formvideo"
-                  name="videolink"
-                  value={inputData.videolink}
-                  onChange={handleInput}
-                  placeholder="Share Video Link"
-                  style={{ backgroundColor: "#f6f5f4" }}
-                />
+            <Form.Label htmlFor="formvideo">Video Link</Form.Label>
+            <Form.Control
+              type="text"
+              id="formvideo"
+              name="videolink"
+              value={videolink}
+              onChange={(e) => setVideolink(e.target.value)}
+              placeholder="Share Video Link"
+              style={{ backgroundColor: "#f6f5f4" }}
+            />
           </div>
           <Row>
             <Col md={3} className="mt-4">
               <Form.Select
                 className="form-select form-select-sm py-3 bg-body-tertiary"
                 aria-label="select example"
-                value={inputData.category_id}
-                onChange={handleInput}
+                value={category_id}
+                onChange={(e) => setCategory_id(e.target.value)}
                 name="category_id"
               >
                 <option value="" disabled>
@@ -182,7 +133,17 @@ const AddProduct = () => {
               className="border border-0 py-2 px-5 fw-bold text-white rounded"
               style={{ backgroundColor: " #efc81a" }}
             >
-              Post
+              {isLoading ? (
+                <ProgressBar
+                  height={20}
+                  width={20}
+                  ariaLabel="progress-bar-loading"
+                  type="Oval"
+                  color="#fff"
+                />
+              ) : (
+                "Post"
+              )}
             </button>
           </div>
         </Form>

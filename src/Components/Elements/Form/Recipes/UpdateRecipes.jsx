@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { Slide, ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { detailRecipe, updateRecipe } from "./../../../../Redux/Action/RecipesAction";
+import { detailRecipes, updateRecipe } from "../../../../Redux Toolkit/Slice/recipeSlice";
 import "./update.css";
 
 const UpdateProduct = () => {
@@ -14,7 +14,7 @@ const UpdateProduct = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { data, isLoading, isError } = useSelector(
-    (state) => state.productReducer
+    (state) => state.recipeReducer
   );
   const [image, setImage] = useState(null);
   const [inputData, setInputData] = useState({
@@ -26,7 +26,7 @@ const UpdateProduct = () => {
   });
 
   useEffect(() => {
-    dispatch(detailRecipe(menuId));
+    dispatch(detailRecipes(menuId));
   }, []);
 
   useEffect(() => {

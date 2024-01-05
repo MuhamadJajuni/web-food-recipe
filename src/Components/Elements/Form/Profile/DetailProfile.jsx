@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { Slide, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { deleteRecipe, getMyRecipe } from "./../../../../Redux/Action/RecipesAction";
+import { deleteRecipe, getMyRecipes } from "../../../../Redux Toolkit/Slice/recipeSlice"
 import style from "./style/detail.module.css";
 
 const Index = () => {
@@ -16,7 +16,7 @@ const Index = () => {
   const [totalPage, setTotalPage] = useState(0);
 
   const dispatch = useDispatch();
-  const { recipe, isLoading } = useSelector((state) => state.myProductReducer);
+  const { recipe, isLoading } = useSelector((state) => state.recipes);
 
   const handleClose = () => setModalVisibility({});
   const handleShow = (item) => {
@@ -41,7 +41,7 @@ const Index = () => {
   };
 
   useEffect(() => {
-    dispatch(getMyRecipe(currentPage))
+    dispatch(getMyRecipes(currentPage))
       .then((result) => {
         console.log(result);
         setTotalPage(result.data.pagination.totalPage);

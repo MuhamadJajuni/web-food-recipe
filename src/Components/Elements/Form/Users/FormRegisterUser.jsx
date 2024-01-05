@@ -1,49 +1,43 @@
-import { useState } from "react";
+/* eslint-disable no-unused-vars */
+import React, { useState } from "react";
 import { Col, Container, Form, Row } from "react-bootstrap";
 import { ProgressBar } from "react-loader-spinner";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import { Slide, ToastContainer, toast } from "react-toastify";
+import { Slide, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ButtonAuth from "../../ButtonCheckAuth/Index";
 import CheckBookAuth from "../../Checkbox/Index";
 import InputCheck from "../../Form/FormInput";
 import InputPassCheck from "../../Form/FormPassword";
 import Header from "../../Header/Index";
-import { actionRegister } from "./../../../../Redux/Action/AuthAction";
+import { registerUsers } from "../../../../Redux Toolkit/Slice/authSlice";
 
 const FormRegister = () => {
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const { isError, isLoading } = useSelector((state) => state.authReducer);
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    password: "",
-  });
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [isChecked, setIsChecked] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
 
-    const { name, email, password } = formData;
-    if (!name || !email || !password) {
-      toast.error("Please fill in all the fields");
-      return;
-    }
-
-    if (!isChecked) {
-      toast.warning("Please check the checkbox");
-      return;
-    }
     try {
-      await dispatch(actionRegister(formData, navigate));
+      // Dispatch the registerUsers action with the user details
+      await dispatch(registerUsers({ name, email, password }));
+
+      // Redirect to the desired page upon successful registration
+      navigate("/login");
     } catch (error) {
-      toast.error(isError || "Internal server error");
+      // Handle registration failure, e.g., display an error message
+      console.error("Registration failed:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -59,13 +53,13 @@ const FormRegister = () => {
         }}
       >
         <ProgressBar
-        height="80"
-        width="80"
-        ariaLabel="progress-bar-loading"
-        wrapperStyle={{}}
-        wrapperClass="progress-bar-wrapper"
-        borderColor = '#F4442E'
-        barColor = '#51E5FF'
+          height="80"
+          width="80"
+          ariaLabel="progress-bar-loading"
+          wrapperStyle={{}}
+          wrapperClass="progress-bar-wrapper"
+          borderColor="#F4442E"
+          barColor="#51E5FF"
         />
       </div>
     );
@@ -95,14 +89,14 @@ const FormRegister = () => {
             <Col md={4}>
               <Header
                 judul="Let's Get Started!"
-                text="Create new account to access all features"
+                text="Create a new account to access all features"
               />
               <Form onSubmit={handleSubmit}>
                 <InputCheck
                   label="Name"
                   name="name"
-                  value={formData.name}
-                  onChange={handleChange}
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
                   type="text"
                   placeholder="Enter Name"
                 />
@@ -111,26 +105,29 @@ const FormRegister = () => {
                   label="Email"
                   type="email"
                   name="email"
-                  value={formData.email}
-                  onChange={handleChange}
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   placeholder="Enter Email"
                 />
                 <InputPassCheck
                   label="Password"
                   name="password"
-                  value={formData.password}
-                  onChange={handleChange}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   type="password"
                   placeholder="Enter Password"
                 />
-                <CheckBookAuth onChange={(checked) => setIsChecked(checked)} />
+                <CheckBookAuth
+                  checked={isChecked}
+                  onChange={(e) => setIsChecked(e.target.checked)}
+                />
                 <ButtonAuth text="Register Now" />
                 <p className="mt-3 d-flex justify-content-center align-items-center">
-                  Already have account?
+                  Already have an account?
                   <span>
                     <Link
                       to="/login"
-                      style={{ color: " #efc81a" }}
+                      style={{ color: "#efc81a" }}
                       className="text-decoration-none"
                     >
                       Log in Here
