@@ -5,7 +5,6 @@ import {
 } from "@reduxjs/toolkit";
 import axios from "axios";
 
-
 // ADD RECIPES
 export const addRecipes = createAsyncThunk(
   "recipes/addRecipes",
@@ -58,25 +57,24 @@ export const updateRecipe = createAsyncThunk(
 
 /// DETAIL RECIPES
 export const detailRecipes = createAsyncThunk(
-  'recipes/detailRecipes',
+  "recipes/detailRecipes",
   async (id) => {
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem("token");
       const response = await axios.get(`http://localhost:3000/recipe/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
       });
       return response.data;
     } catch (error) {
-      console.error('Error fetching recipe details:', error);
-      console.log('Error Response:', error.response);
+      console.error("Error fetching recipe details:", error);
+      console.log("Error Response:", error.response);
       throw error;
     }
   }
 );
-
 
 // GET MY RECIPES
 export const getMyRecipe = createAsyncThunk(
@@ -116,7 +114,7 @@ export const deleteRecipe = createAsyncThunk(
 );
 
 const recipesEntity = createEntityAdapter({
-  selectId: (recipe) => recipe.id || recipe.data.id
+  selectId: (recipe) => recipe.id || recipe.data.id,
 });
 
 const recipeSlice = createSlice({
@@ -142,8 +140,6 @@ const recipeSlice = createSlice({
         recipesEntity.removeOne(state, action.payload);
       });
   },
-  
-  
 });
 
 export const recipesSelector = recipesEntity.getSelectors(

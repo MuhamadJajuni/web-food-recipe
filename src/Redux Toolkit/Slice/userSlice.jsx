@@ -36,9 +36,9 @@ import {
     "users/getProfile",
     async ({ id }) => {
       const token = localStorage.getItem("token");
-      const response = await axios.get(`http://localhost:3000/detail/${id}`, { // Added a forward slash
+      const response = await axios.get(`http://localhost:3000/detail/${id}`, { 
         headers: {
-          Authorization: `Bearer ${token || ""}`, // Handle the case where token is null or undefined
+          Authorization: `Bearer ${token || ""}`, 
         },
       });
       return response.data;
