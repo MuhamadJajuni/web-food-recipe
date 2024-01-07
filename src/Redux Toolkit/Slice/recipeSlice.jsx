@@ -68,14 +68,11 @@ export const detailRecipes = createAsyncThunk(
           'Content-Type': 'application/json', // Adjust content type if necessary
         },
       });
-
-      console.log('Server Response:', response.data);
-
       return response.data;
     } catch (error) {
       console.error('Error fetching recipe details:', error);
-      console.log('Error Response:', error.response); // Log the error response
-      throw error; // Rethrow the error to propagate it to the caller
+      console.log('Error Response:', error.response);
+      throw error;
     }
   }
 );
@@ -95,6 +92,7 @@ export const getMyRecipes = createAsyncThunk(
         Authorization: `Bearer ${token}`,
       },
     });
+    console.log(response.data);
     return response.data;
   }
 );
@@ -112,6 +110,7 @@ export const deleteRecipe = createAsyncThunk(
         },
       }
     );
+    console.log(response.data);
     return response.data;
   }
 );

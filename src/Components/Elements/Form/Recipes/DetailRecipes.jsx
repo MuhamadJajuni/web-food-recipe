@@ -1,7 +1,6 @@
 /* eslint-disable no-undef */
 /* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
-import axios from "axios";
 import { Fragment, useEffect, useState } from "react";
 import { Button, Col, Container, Form, Row } from "react-bootstrap";
 import { BiBookmark, BiLike } from "react-icons/bi";
@@ -9,80 +8,24 @@ import { ProgressBar } from "react-loader-spinner";
 import ReactPlayer from "react-player";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import { Slide, ToastContainer, toast } from "react-toastify";
+import { Slide, ToastContainer } from "react-toastify";
 import photo from "../../../../Assets/images/user-demo.jpg";
-import { detailRecipes } from "../../../../Redux Toolkit/Slice/recipeSlice";
+import {
+  detailRecipes
+} from "../../../../Redux Toolkit/Slice/recipeSlice";
 import "./detail.css";
 
 const Index = () => {
   const { menuId } = useParams();
   const dispatch = useDispatch();
+  const [isLoading, setIsLoading] = useState(false);
 
-  const { data, isLoading } = useSelector((state) => state.recipes);
+  const data = useSelector((state) => state.recipes);
   console.log(data);
-  const [comment, setComment] = useState([]);
-  const [totalComment, setTotalComment] = useState(0);
-  const [inputComment, setInputComment] = useState({
-    recipe_id: menuId,
-    comment_text: "",
-    user_id: localStorage.getItem("id"),
-  });
 
-  const getComment = () => {
-    axios
-      .get(import.meta.env.VITE_REACT_BACKEND_URL + `/comment/${menuId}`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      })
-      .then((res) => {
-        console.log(res);
-        setTotalComment(res.data.data.length);
-        setComment(res.data.data);
-      })
-      .catch((err) => {
-        console.log(err);
-        toast.error(`${err}`);
-      });
-  };
-
-  const postComment = (event) => {
-    event.preventDefault();
-    axios
-      .post(
-        import.meta.env.VITE_REACT_BACKEND_URL + "/postComment",
-        inputComment,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      )
-      .then((res) => {
-        console.log(res);
-        toast.success("Comment Success");
-        setTimeout(() => {
-          window.location.reload();
-        }, 1000);
-      })
-      .catch((err) => {
-        console.log(err);
-        toast.error(err.message);
-      });
-  };
-
-  const onChange = (e) => {
-    setInputComment({
-      ...inputComment,
-      [e.target.name]: e.target.value,
-    });
-  };
   useEffect(() => {
-    console.log("Data from server:", data);
     dispatch(detailRecipes(menuId));
-    getComment();
-  }, [dispatch, menuId]);
-  
+  }, [dispatch]);
 
   if (isLoading) {
     return (
@@ -144,23 +87,20 @@ const Index = () => {
                   />
                 </div>
                 <div>
-                  <p className="m-0">{data?.data?.author}</p>
+                  <p className="m-0">{data.author}</p>
                   <p className="m-0 fw-bold">{data?.data?.category}</p>
                 </div>
               </div>
 
               <div>
                 <p className="m-0">
-                  {new Date(data?.data?.create_at).toLocaleDateString(
-                    "id-ID",
-                    {
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    }
-                  )}
+                  {new Date(data?.data?.create_at).toLocaleDateString("id-ID", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  })}
                 </p>
-                <p className="m-0">20 Likes - {totalComment} Comments</p>
+                <p className="m-0">20 Likes - Comments</p>
               </div>
             </div>
           </Col>
@@ -174,7 +114,7 @@ const Index = () => {
           <Col md={12} className="d-flex justify-content-center">
             <img
               className="object-fit-cover rounded main-photo"
-              src={data?.data?.image}
+              src={data.image}
               alt="image"
               width="800px"
               height="450px"
@@ -208,7 +148,11 @@ const Index = () => {
           </Col>
         </Col>
         <div
-          style={{ display: "flex", justifyContent: "center", alignItems: "center" }}
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
           className="d-flex gap-3 my-5"
         >
           <Button
@@ -226,46 +170,8 @@ const Index = () => {
         </div>
       </Container>
 
-      <Container>
-        <Row>
-          <Col md={12} className="horizontal"></Col>
-          {comment?.map((item, index) => (
-            <div key={index}>
-              <div className="d-flex my-5 coments">
-                <div className="col-md-4 d-flex gap-4 justify-content-center">
-                  <img
-                    src={item.author_photo}
-                    alt="profile"
-                    width={50}
-                    height={50}
-                    className="rounded rounded-circle"
-                  />
-
-                  <div>
-                    <p className="m-0">{item.author}</p>
-                    <p className="m-0 fw-bold">{item.formatted_create_at}</p>
-                  </div>
-                  <div
-                    style={{
-                      height: "60px",
-                      width: "5px",
-                      backgroundColor: "#efc81a",
-                    }}
-                  ></div>
-                </div>
-                <div className="col-md-8 d-flex align-items-center text-coments">
-                  <p className="m-0">{item.comment_text}</p>
-                </div>
-              </div>
-            </div>
-          ))}
-
-          <div className="col-md-12 horizontal"></div>
-        </Row>
-      </Container>
-
       <div className="container my-5">
-        <Form onSubmit={postComment}>
+        <Form>
           <div className="mb-3">
             <label htmlFor="comments" className="form-label"></label>
             <textarea
@@ -274,8 +180,6 @@ const Index = () => {
               rows="5"
               placeholder="Your Comment Here!"
               style={{ backgroundColor: "#f6f5f4" }}
-              value={inputComment.comment_text}
-              onChange={onChange}
               name="comment_text"
             ></textarea>
           </div>
