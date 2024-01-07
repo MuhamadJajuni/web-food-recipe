@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { Fragment, useEffect, useState } from "react";
 import { Button, Col, Container, Modal, Nav, Row } from "react-bootstrap";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
@@ -6,7 +7,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { Slide, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { deleteRecipe, getMyRecipes } from "../../../../Redux Toolkit/Slice/recipeSlice"
+import {
+  deleteRecipe,
+  getMyRecipe,
+} from "../../../../Redux Toolkit/Slice/recipeSlice";
 import style from "./style/detail.module.css";
 
 const Index = () => {
@@ -14,9 +18,11 @@ const Index = () => {
   const [modalVisibility, setModalVisibility] = useState({});
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPage, setTotalPage] = useState(0);
+  const [isLoading, setIsLoading] = useState("");
 
   const dispatch = useDispatch();
-  const { recipe, isLoading } = useSelector((state) => state.recipes);
+  const recipe = useSelector((state) => state.recipes);
+  console.log(recipe);
 
   const handleClose = () => setModalVisibility({});
   const handleShow = (item) => {
@@ -41,17 +47,25 @@ const Index = () => {
   };
 
   useEffect(() => {
-    dispatch(getMyRecipes(currentPage))
-      .then((result) => {
-        console.log(result);
-        setTotalPage(result.data.pagination.totalPage);
-      })
-      .catch((error) => {
-        console.error("Error fetching recipes:", error);
-      });
-  }, [dispatch, currentPage]);
+    const fetchData = async () => {
+      try {
+        setIsLoading(true);
 
-  if (isLoading) {
+        const result = await dispatch(getMyRecipe(currentPage));
+        console.log(result.payload);
+        setTotalPage(result.payload.pagination.totalPage);
+
+        setIsLoading(false);
+      } catch (error) {
+        console.error("Error fetching recipes:", error);
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [dispatch, currentPage, setIsLoading]);
+
+  if (isLoading || !recipe) {
     return (
       <div
         style={{
@@ -63,13 +77,13 @@ const Index = () => {
         }}
       >
         <ProgressBar
-        height="80"
-        width="80"
-        ariaLabel="progress-bar-loading"
-        wrapperStyle={{}}
-        wrapperClass="progress-bar-wrapper"
-        borderColor = '#F4442E'
-        barColor = '#51E5FF'
+          height="80"
+          width="80"
+          ariaLabel="progress-bar-loading"
+          wrapperStyle={{}}
+          wrapperClass="progress-bar-wrapper"
+          borderColor="#F4442E"
+          barColor="#51E5FF"
         />
       </div>
     );
@@ -91,35 +105,62 @@ const Index = () => {
           pauseOnHover
           theme="colored"
         />
-                        {/* modal body */}
-                        <div className="modal fade" id="exampleModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                  <div className="modal-dialog">
-                    <div className="modal-content">
-                      <div className="modal-header">
-                        <h1 className="modal-title fs-5" id="exampleModalLabel">
-                          Update Profile
-                        </h1>
-                        <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                      </div>
-                      <form
-                      >
-                        <div className="modal-body">
-                          <input type="text" className="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm" placeholder="Name" name="name" />
-                          <input type="file" className="form-control mt-3" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm" name="image"/>
-                        </div>
-                        <div className="modal-footer">
-                          <button type="button" className="btn btn-outline-secondary" data-bs-dismiss="modal">
-                            Close
-                          </button>
-                          <button type="submit" className="btn btn-outline-warning">
-                            Update
-                          </button>
-                        </div>
-                      </form>
-                    </div>
-                  </div>
+        {/* modal body */}
+        <div
+          className="modal fade"
+          id="exampleModal"
+          tabIndex="-1"
+          aria-labelledby="exampleModalLabel"
+          aria-hidden="true"
+        >
+          <div className="modal-dialog">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h1 className="modal-title fs-5" id="exampleModalLabel">
+                  Update Profile
+                </h1>
+                <button
+                  type="button"
+                  className="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                ></button>
+              </div>
+              <form>
+                <div className="modal-body">
+                  <input
+                    type="text"
+                    className="form-control"
+                    aria-label="Sizing example input"
+                    aria-describedby="inputGroup-sizing-sm"
+                    placeholder="Name"
+                    name="name"
+                  />
+                  <input
+                    type="file"
+                    className="form-control mt-3"
+                    aria-label="Sizing example input"
+                    aria-describedby="inputGroup-sizing-sm"
+                    name="image"
+                  />
                 </div>
-                {/* modal body end */}
+                <div className="modal-footer">
+                  <button
+                    type="button"
+                    className="btn btn-outline-secondary"
+                    data-bs-dismiss="modal"
+                  >
+                    Close
+                  </button>
+                  <button type="submit" className="btn btn-outline-warning">
+                    Update
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+        {/* modal body end */}
         <Nav className="nav">
           <Nav.Item>
             <Nav.Link
@@ -154,9 +195,14 @@ const Index = () => {
       <Container className="tab-content">
         <div className="tab-pane active" id="recipes">
           <Container>
-            {recipe?.data?.map((item, index) => {
+            {recipe.ids.map((itemId) => {
+              const item = recipe.entities[itemId];
+              const authorName = item?.author?.name || 'Unknown Author';
+              const ingredientsList = item?.ingredients
+                ? item.ingredients.split(",")
+                : [];
               return (
-                <div key={index}>
+                <div key={item}>
                   <Row className="my-5">
                     <Col
                       md={4}
@@ -177,11 +223,9 @@ const Index = () => {
                         <h5 className="fw-bold">{item.title}</h5>
                         <p className="fs-5 m-0">Ingredients</p>
                         <ul className="fs-6">
-                          {item.ingredients
-                            .split(",")
-                            .map((ingredients, index) => (
-                              <li key={index}>{ingredients.trim()}</li>
-                            ))}
+                          {ingredientsList.map((Ingredients, index) => (
+                            <li key={index}>{Ingredients.trim()}</li>
+                          ))}
                         </ul>
                         <Button
                           className="mb-2 text-white rounded border border-0 p-1 fw-bold"

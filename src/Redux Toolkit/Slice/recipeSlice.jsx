@@ -65,7 +65,7 @@ export const detailRecipes = createAsyncThunk(
       const response = await axios.get(`http://localhost:3000/recipe/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json', // Adjust content type if necessary
+          'Content-Type': 'application/json',
         },
       });
       return response.data;
@@ -79,9 +79,9 @@ export const detailRecipes = createAsyncThunk(
 
 
 // GET MY RECIPES
-export const getMyRecipes = createAsyncThunk(
-  "recipes/getMyRecipes",
-  async ({ page }) => {
+export const getMyRecipe = createAsyncThunk(
+  "recipes/getMyRecipe",
+  async (page) => {
     const token = localStorage.getItem("token");
     const response = await axios.get("http://localhost:3000/myRecipe", {
       params: {
@@ -116,7 +116,7 @@ export const deleteRecipe = createAsyncThunk(
 );
 
 const recipesEntity = createEntityAdapter({
-  selectId: (recipe) => recipe.data.id,
+  selectId: (recipe) => recipe.id || recipe.data.id
 });
 
 const recipeSlice = createSlice({
@@ -134,8 +134,9 @@ const recipeSlice = createSlice({
       .addCase(updateRecipe.fulfilled, (state, action) => {
         recipesEntity.updateOne(state, action.payload);
       })
-      .addCase(getMyRecipes.fulfilled, (state, action) => {
-        recipesEntity.upsertMany(state, action.payload);
+      .addCase(getMyRecipe.fulfilled, (state, action) => {
+        recipesEntity.setAll(state, action.payload.data);
+        console.log(action.payload);
       })
       .addCase(deleteRecipe.fulfilled, (state, action) => {
         recipesEntity.removeOne(state, action.payload);
