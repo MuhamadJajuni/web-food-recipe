@@ -20,14 +20,15 @@ const Index = () => {
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
 
-  const data = useSelector((state) => state.recipes);
-  console.log(data);
+  const recipe = useSelector((state) => state.recipes.entities[menuId]);
+  console.log(recipe);
 
   useEffect(() => {
     dispatch(detailRecipes(menuId));
-  }, [dispatch]);
+  }, [dispatch, menuId]);
 
-  if (isLoading) {
+
+  if (isLoading || !recipe)  {
     return (
       <div
         style={{
@@ -87,14 +88,14 @@ const Index = () => {
                   />
                 </div>
                 <div>
-                  <p className="m-0">{data.author}</p>
-                  <p className="m-0 fw-bold">{data?.data?.category}</p>
+                  <p className="m-0">{recipe.data.author}</p>
+                  <p className="m-0 fw-bold">{recipe.data.category}</p>
                 </div>
               </div>
 
               <div>
                 <p className="m-0">
-                  {new Date(data?.data?.create_at).toLocaleDateString("id-ID", {
+                  {new Date(recipe.data.create_at).toLocaleDateString("id-ID", {
                     year: "numeric",
                     month: "long",
                     day: "numeric",
@@ -109,12 +110,12 @@ const Index = () => {
       <Container>
         <Row>
           <h1 className="fw-bold text-center mb-5 color">
-            {data?.data?.title}
+            {recipe.data.title}
           </h1>
           <Col md={12} className="d-flex justify-content-center">
             <img
               className="object-fit-cover rounded main-photo"
-              src={data.image}
+              src={recipe.data.image}
               alt="image"
               width="800px"
               height="450px"
@@ -124,7 +125,7 @@ const Index = () => {
         <Col md={12} className="my-5">
           <h3 className="fw-semibold">Ingredients</h3>
           <ul>
-            {data?.data?.ingredients?.split(",").map((ingredient, index) => (
+            {recipe.data.ingredients?.split(",").map((ingredient, index) => (
               <li key={index} className="py-1">
                 {ingredient.trim()}
               </li>
@@ -139,7 +140,7 @@ const Index = () => {
           >
             <div style={{ marginTop: "15px", marginBottom: "20px" }}>
               <ReactPlayer
-                url={data?.data?.videolink}
+                url={recipe.data.videolink}
                 width="800px"
                 height="500px"
                 controls={true}
