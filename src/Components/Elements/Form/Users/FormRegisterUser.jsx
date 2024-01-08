@@ -6,12 +6,12 @@ import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { Slide, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { registerUsers } from "../../../../Redux Toolkit/Slice/authSlice";
 import ButtonAuth from "../../ButtonCheckAuth/Index";
 import CheckBookAuth from "../../Checkbox/Index";
 import InputCheck from "../../Form/FormInput";
 import InputPassCheck from "../../Form/FormPassword";
 import Header from "../../Header/Index";
-import { registerUsers } from "../../../../Redux Toolkit/Slice/authSlice";
 
 const FormRegister = () => {
   const [name, setName] = useState("");
@@ -19,7 +19,6 @@ const FormRegister = () => {
   const [password, setPassword] = useState("");
   const [isChecked, setIsChecked] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -28,13 +27,9 @@ const FormRegister = () => {
     setIsLoading(true);
 
     try {
-      // Dispatch the registerUsers action with the user details
       await dispatch(registerUsers({ name, email, password }));
-
-      // Redirect to the desired page upon successful registration
       navigate("/login");
     } catch (error) {
-      // Handle registration failure, e.g., display an error message
       console.error("Registration failed:", error);
     } finally {
       setIsLoading(false);

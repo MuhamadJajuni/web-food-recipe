@@ -22,7 +22,6 @@ const Index = () => {
 
   const dispatch = useDispatch();
   const recipe = useSelector((state) => state.recipes);
-  console.log(recipe);
 
   const handleClose = () => setModalVisibility({});
   const handleShow = (item) => {
@@ -52,7 +51,6 @@ const Index = () => {
         setIsLoading(true);
 
         const result = await dispatch(getMyRecipe(currentPage));
-        console.log(result.payload);
         setTotalPage(result.payload.pagination.totalPage);
 
         setIsLoading(false);
@@ -197,7 +195,7 @@ const Index = () => {
           <Container>
             {recipe.ids.map((itemId) => {
               const item = recipe.entities[itemId];
-              const authorName = item?.author?.name || 'Unknown Author';
+              const authorName = item?.author?.name || "Unknown Author";
               const ingredientsList = item?.ingredients
                 ? item.ingredients.split(",")
                 : [];

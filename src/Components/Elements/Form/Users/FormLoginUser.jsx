@@ -5,19 +5,18 @@ import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { Slide, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { loginUsers } from "../../../../Redux Toolkit/Slice/authSlice";
 import ButtonAuth from "../../ButtonCheckAuth/Index";
 import CheckBookAuth from "../../Checkbox/Index";
 import InputCheck from "../../Form/FormInput";
 import InputPassCheck from "../../Form/FormPassword";
 import Header from "../../Header/Index";
-import { loginUsers } from "../../../../Redux Toolkit/Slice/authSlice";
 
 const FormLogin = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isChecked, setIsChecked] = useState(false);
-
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -26,13 +25,9 @@ const FormLogin = () => {
     setIsLoading(true);
 
     try {
-      // Dispatch the loginUsers action with the email and password
       await dispatch(loginUsers({ email, password }));
-
-      // Redirect to the desired page upon successful login
       navigate("/home");
     } catch (error) {
-      // Handle login failure, e.g., display an error message
       console.error("Login failed:", error);
     } finally {
       setIsLoading(false);

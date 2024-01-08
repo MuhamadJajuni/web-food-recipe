@@ -18,7 +18,7 @@ const Head = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPage, setTotalPage] = useState(0);
 
-  const getData = useCallback(
+  const getAllData = useCallback(
     (page) => {
       const token = localStorage.getItem("token");
       axios
@@ -34,7 +34,6 @@ const Head = () => {
           },
         })
         .then((res) => {
-          console.log(res);
           setData(res.data);
           setTotalPage(res.data.pagination.totalPage);
         })
@@ -48,7 +47,7 @@ const Head = () => {
   const handleSearchSubmit = async (event) => {
     event.preventDefault();
     setCurrentPage(1);
-    getData(1);
+    getAllData(1);
   };
 
   const handleNext = useCallback(() => {
@@ -68,8 +67,8 @@ const Head = () => {
   }, []);
 
   useEffect(() => {
-    getData(currentPage);
-  }, [getData, currentPage]);
+    getAllData(currentPage);
+  }, [getAllData, currentPage]);
 
   const nextDisabled = currentPage >= totalPage;
   const previousDisabled = currentPage === 1;

@@ -10,25 +10,20 @@ import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { Slide, ToastContainer } from "react-toastify";
 import photo from "../../../../Assets/images/user-demo.jpg";
-import {
-  detailRecipes
-} from "../../../../Redux Toolkit/Slice/recipeSlice";
+import { detailRecipes } from "../../../../Redux Toolkit/Slice/recipeSlice";
 import "./detail.css";
 
 const Index = () => {
   const { menuId } = useParams();
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
-
   const recipe = useSelector((state) => state.recipes.entities[menuId]);
-  console.log(recipe);
 
   useEffect(() => {
     dispatch(detailRecipes(menuId));
   }, [dispatch, menuId]);
 
-
-  if (isLoading || !recipe)  {
+  if (isLoading || !recipe) {
     return (
       <div
         style={{

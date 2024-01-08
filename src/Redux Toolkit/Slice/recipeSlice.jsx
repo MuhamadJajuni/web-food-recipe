@@ -1,9 +1,27 @@
 import {
   createAsyncThunk,
-  createSlice,
   createEntityAdapter,
+  createSlice,
 } from "@reduxjs/toolkit";
 import axios from "axios";
+
+// GET MY RECIPES
+export const getMyRecipe = createAsyncThunk(
+  "recipes/getMyRecipe",
+  async (page) => {
+    const token = localStorage.getItem("token");
+    const response = await axios.get("http://localhost:3000/myRecipe", {
+      params: {
+        limit: 5,
+        page: page,
+      },
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  }
+);
 
 // ADD RECIPES
 export const addRecipes = createAsyncThunk(
@@ -33,10 +51,10 @@ export const addRecipes = createAsyncThunk(
 // UPDATE RECIPES
 export const updateRecipe = createAsyncThunk(
   "recipes/updateRecipe",
-  async ({ id, title, ingredients, videolink, category_id, image }) => {
+  async ({ menuId, title, ingredients, videolink, category_id, image }) => {
     const token = localStorage.getItem("token");
     const response = await axios.put(
-      `http://localhost:3000/updateRecipe/${id}`,
+      `http://localhost:3000/updateRecipe/${menuId}`,
       {
         title,
         ingredients,
@@ -58,40 +76,24 @@ export const updateRecipe = createAsyncThunk(
 /// DETAIL RECIPES
 export const detailRecipes = createAsyncThunk(
   "recipes/detailRecipes",
-  async (id) => {
+  async (menuId) => {
     try {
       const token = localStorage.getItem("token");
-      const response = await axios.get(`http://localhost:3000/recipe/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await axios.get(
+        `http://localhost:3000/recipe/${menuId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
       return response.data;
     } catch (error) {
       console.error("Error fetching recipe details:", error);
       console.log("Error Response:", error.response);
       throw error;
     }
-  }
-);
-
-// GET MY RECIPES
-export const getMyRecipe = createAsyncThunk(
-  "recipes/getMyRecipe",
-  async (page) => {
-    const token = localStorage.getItem("token");
-    const response = await axios.get("http://localhost:3000/myRecipe", {
-      params: {
-        limit: 5,
-        page: page,
-      },
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    console.log(response.data);
-    return response.data;
   }
 );
 
@@ -108,7 +110,6 @@ export const deleteRecipe = createAsyncThunk(
         },
       }
     );
-    console.log(response.data);
     return response.data;
   }
 );
@@ -130,11 +131,10 @@ const recipeSlice = createSlice({
         recipesEntity.setOne(state, action.payload);
       })
       .addCase(updateRecipe.fulfilled, (state, action) => {
-        recipesEntity.updateOne(state, action.payload);
+        recipesEntity.updateOne(state, action.payload.data);
       })
       .addCase(getMyRecipe.fulfilled, (state, action) => {
         recipesEntity.setAll(state, action.payload.data);
-        console.log(action.payload);
       })
       .addCase(deleteRecipe.fulfilled, (state, action) => {
         recipesEntity.removeOne(state, action.payload);

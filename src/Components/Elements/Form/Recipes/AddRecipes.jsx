@@ -26,8 +26,10 @@ const AddProduct = () => {
     setIsLoading(true);
 
     try {
-      await dispatch(addRecipes({ title, ingredients, videolink, category_id, image }));
-      navigate("/home");
+      await dispatch(
+        addRecipes({ title, ingredients, videolink, category_id, image })
+      );
+      window.location.reload();
     } catch (error) {
       console.error("Error creating recipe:", error);
     } finally {
@@ -60,7 +62,13 @@ const AddProduct = () => {
               htmlFor="upload-photo"
             >
               <div className="input-photo" id="addphotowrapper">
-                {image && <img src={URL.createObjectURL(image)} alt="uploaded" className="input-photo" />}
+                {image && (
+                  <img
+                    src={URL.createObjectURL(image)}
+                    alt="uploaded"
+                    className="input-photo"
+                  />
+                )}
                 <p>Add Photo</p>
               </div>
             </label>

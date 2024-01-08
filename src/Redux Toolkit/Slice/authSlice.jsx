@@ -49,7 +49,6 @@ const authSlice = createSlice({
         authEntity.addOne(state, action.payload);
       })
       .addCase(loginUsers.fulfilled, (state, action) => {
-        // Use updateOne instead of addOne
         authEntity.updateOne(state, action.payload);
       });
   },

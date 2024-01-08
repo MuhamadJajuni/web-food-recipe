@@ -1,75 +1,59 @@
-import axios from "axios";
 import { Fragment, useEffect, useState } from "react";
 import { Button, Col, Container, Form, Row } from "react-bootstrap";
 import { BsCamera } from "react-icons/bs";
 import { ProgressBar } from "react-loader-spinner";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import { Slide, ToastContainer, toast } from "react-toastify";
+import { Slide, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import user from "../../../../Assets/images/logo-apk.png";
-import {updateProfile} from "../../../../Redux Toolkit/Slice/userSlice"
+import {
+  getProfile,
+  updateProfile,
+} from "../../../../Redux Toolkit/Slice/userSlice";
 import "./style/edit.css";
+
 const Index = () => {
-  const { userId } = useParams();
+  const [isLoading, setIsLoading] = useState("");
+  const [name, setName] = useState("");
   const [photo, setPhoto] = useState(null);
+  const [previewImage, setPreviewImage] = useState(null);
   const dispatch = useDispatch();
-  const [dataUser, setDataUser] = useState({
-    name: "",
-    photo: "",
-    photoUrl: "",
-  });
-  const [profile, setProfile] = useState(null);
-  const userToken = localStorage.getItem("token");
+  const { userId } = useParams();
+  const users = useSelector((state) => state.users.entities[userId]);
 
   useEffect(() => {
-    function getProfile() {
-      return axios.get(
-        import.meta.env.VITE_REACT_BACKEND_URL + `/detail/${userId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${userToken}`,
-          },
-        }
-      );
+    dispatch(getProfile(userId));
+  }, [dispatch, userId]);
+
+  useEffect(() => {
+    setIsLoading(true);
+    if (users && users.data) {
+      console.log(users.data[0]);
+      setName(users.data[0].name);
+      setPhoto(users.data[0].photo);
+      setPreviewImage(users.data[0].photo);
     }
+    setIsLoading(false);
+  }, [users]);
 
-    getProfile().then((res) => {
-      setProfile(res.data);
-    });
-  }, [userId, userToken]);
-  const { isLoading, isError } = useSelector((state) => state.users);
-  const handleInput = (e) => {
-    const { value, name } = e.target;
-    setDataUser({ ...dataUser, [name]: value });
-  };
-  const handlePhoto = (e) => {
-    const selectedPhoto = e.target.files[0];
-  
-    setPhoto(selectedPhoto);
-  
-    setDataUser({
-      ...dataUser,
-      photo: selectedPhoto, // Set the photo field to the actual File object
-      photoUrl: URL.createObjectURL(selectedPhoto),
-    });
+  const handleImageChange = (e) => {
+    const selectedImage = e.target.files[0];
+    setPhoto(selectedImage);
+    setPreviewImage(URL.createObjectURL(selectedImage));
   };
 
-  const handleSubmit = async (e) => {
+  const handleUpdate = async (e) => {
     e.preventDefault();
-  
-    let bodyFormData = new FormData();
-    bodyFormData.append("name", dataUser.name);
-    bodyFormData.append("photo", dataUser.photo);
-  
+    setIsLoading(true);
     try {
-      await dispatch(updateProfile(bodyFormData, userId));
+      await dispatch(updateProfile({ userId, name, photo }));
       window.location.reload();
     } catch (error) {
-      toast.error(isError || "Internal server error");
+      console.log(error);
+    } finally {
+      setIsLoading(false);
     }
   };
-  
 
   if (isLoading) {
     return (
@@ -83,13 +67,13 @@ const Index = () => {
         }}
       >
         <ProgressBar
-        height="80"
-        width="80"
-        ariaLabel="progress-bar-loading"
-        wrapperStyle={{}}
-        wrapperClass="progress-bar-wrapper"
-        borderColor = '#F4442E'
-        barColor = '#51E5FF'
+          height="80"
+          width="80"
+          ariaLabel="progress-bar-loading"
+          wrapperStyle={{}}
+          wrapperClass="progress-bar-wrapper"
+          borderColor="#F4442E"
+          barColor="#51E5FF"
         />
       </div>
     );
@@ -113,16 +97,7 @@ const Index = () => {
         <Row>
           <Col md={12}>
             <div className="d-flex justify-content-center align-items-center flex-column mt-5">
-              <img
-                className="size-img my-3"
-                src={
-                  dataUser.photoUrl ||
-                  dataUser.photo ||
-                  profile?.data[0]?.photo ||
-                  user
-                }
-                alt="Profile"
-              />
+              <img className="size-img my-3" src={previewImage} alt="Profile" />
               <Form.Group className="d-flex flex-column align-items-center">
                 <Form.Label htmlFor="upload-photo">
                   <div className="d-flex gap-2">
@@ -134,21 +109,38 @@ const Index = () => {
                   type="file"
                   name="photo"
                   id="upload-photo"
-                  onChange={handlePhoto}
+                  onChange={handleImageChange}
                 />
               </Form.Group>
-              <p className="text-center fw-bold fs-4">
-                {dataUser.name || profile?.data[0]?.name}
-              </p>
+              <p className="text-center fw-bold fs-4">{name}</p>
               <Col md={4}>
-                <Form onSubmit={handleSubmit}>
+                <Form onSubmit={handleUpdate}>
+                  <div className="mb-3">
+                    <label
+                      className="addphoto w-100"
+                      style={{ height: "250px" }}
+                      htmlFor="upload-photo"
+                    >
+                      <div className="input-photo" id="addphotowrapper">
+                        <img src={previewImage} className="input-photo" />
+
+                        <p>Change Photo</p>
+                      </div>
+                    </label>
+                    <input
+                      type="file"
+                      name="image"
+                      id="upload-photo"
+                      onChange={handleImageChange}
+                    />
+                  </div>
                   <Form.Group>
                     <Form.Label>Name :</Form.Label>
                     <Form.Control
                       type="text"
                       placeholder="Enter Name"
-                      value={dataUser.name}
-                      onChange={handleInput}
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
                       name="name"
                     />
                   </Form.Group>
